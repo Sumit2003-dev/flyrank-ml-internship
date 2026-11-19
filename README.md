@@ -157,4 +157,91 @@ This research was **Built on the FlyRank ML Internship dataset**, provided by [F
 
 ---
 
+## 9. Comprehensive Project Deep Dive (For New Viewers & Evaluators)
+
+Welcome! If you are a recruiter, engineering manager, or peer reviewer visiting this project for the first time, this section provides an all-in-one summary of the **problem**, **data scale**, **engineering milestones**, **benchmark statistics**, and **operational impact** of this work.
+
+---
+
+### Project Key Statistics at a Glance
+
+| Metric / Dimension | Value | Operational Context |
+|---|---|---|
+| **Warehouse Telemetry** | **79,000,000+ rows** | BigQuery/DuckDB production Google Search Console & GA telemetry |
+| **Analyzed Study Scope** | **30,000 unique URLs** | Curated research sample across **32 enterprise brand domains** |
+| **Raw Schema Columns** | **44 raw columns** | Partitioned into strict data contract categories |
+| **Leak-Free Features** | **24 signals** | 90-day trailing aggregates available before prediction moment $T$ |
+| **Banned Leakage Fields** | **14 outcome columns** | 30-day forward windows & coarse target bins strictly banned |
+| **Validation Methodology** | **5-Fold `GroupKFold`** | Split strictly by `client_id` (evaluated on held-out brand domains) |
+| **Portfolio Base Rate** | **54.207%** | 16,262 declining content URLs out of 30,000 |
+| **Baseline Rule Precision@50** | **0.240 (24.0%)** | Legacy heuristic rules (`days >= 90 AND ctr < 2.0%`) |
+| **Random Forest Precision@50** | **0.740 (74.0%)** | Our trained ensemble model evaluated on unseen clients |
+| **Top-Queue Operational Lift** | **+0.500 absolute (~3.1×)** | **37 true declining pages in top 50** vs. 12 under legacy rules |
+| **Model ROC AUC** | **0.747 – 0.763** | Generalization across diverse multi-client search distributions |
+| **Action Playbook Tiers** | **5 operational work orders** | Direct mapping from probability scores to editorial actions |
+
+---
+
+### What I Have Done (The Complete Engineering Journey)
+
+Over 8 weeks in the FlyRank Applied ML track, I engineered this project from raw search telemetry to an operationalized production decision system:
+
+1. **Problem Framing & Error Asymmetry (Weeks 1–2):**
+   - Modeled the operational reality of enterprise publishing: 30,000 pages vs. an editorial budget of 50 bi-weekly reviews.
+   - Proved that decision error costs are highly asymmetric: False Positives cost 3–5 minutes of editor inspection; False Negatives (missed decay) compound into an 80%+ traffic loss as high-impression URLs slip off Google Page 1.
+2. **Data Safety & Leakage Prevention (Week 3):**
+   - Designed a formal 44-column Data Contract dividing the schema into Features (24), Labels (2), Context (4), and Excluded (14).
+   - Eliminated target leakage by strictly banning forward 30-day evaluation windows (`impressions_last_30d`, `clicks_last_30d`) from the feature vector.
+   - Handled structural missingness and sentinel zeroes (`avg_position = 0` indicating unranked pages rather than rank zero).
+3. **Empirical Signal Auditing & Baseline Formulation (Week 4):**
+   - Tested real-world SEO assumptions against data ($N \ge 50$): confirmed freshness vs. decay (pages un-updated for 180+ days have a 67.8% decline rate vs. 44.1% for fresh content); discovered counter-intuitive visibility dynamics (high-impression pages decay at >65% due to competitive displacement).
+   - Formulated a mathematical heuristic baseline reflecting industry best practice to establish an honest benchmark.
+4. **Supervised Model Engineering (Week 5):**
+   - Trained L2 Logistic Regression, depth-constrained Decision Trees (`max_depth=5`), and Random Forest ensembles (100 trees, `min_samples_leaf=10`).
+   - Discovered that daily search presence (`days_with_impressions`) and demand scale (`log_impressions_90d`) are the primary predictors of ranking stability.
+5. **Validation Audit & Leakage Hunting (Week 6):**
+   - Demonstrated that standard random train/test splits caused client-domain memorization.
+   - Enforced 5-fold `GroupKFold` grouped by `client_id` to evaluate genuine out-of-domain transfer on brand domains never seen during training.
+   - Performed deep error analysis on top false positives (high-authority evergreen pillars) and false negatives (long-tail pages with low absolute counts).
+6. **Content Action Playbook & Human Guardrails (Week 7):**
+   - Translated raw probability scores into 5 human-readable editorial work order tiers.
+   - Built diagnostic reason codes (`striking_distance_low_ctr`, `stale_unupdated`, `low_engagement_depth`).
+   - Implemented mandatory operational guardrails: no automated rewrites, seasonal traffic drop exclusions, and sitewide pillar URL protection.
+7. **End-to-End Capstone & Deployment (Week 8):**
+   - Generated reproducible automated pipelines (`scripts/run_all.py`), publication-grade PDF executive reports, and ranked CSV queues.
+   - Deployed the full scientific research paper to GitHub Pages ([Live URL](https://sumit2003-dev.github.io/flyrank-ml-internship/)).
+   - Authored the 5-minute showcase demo outline, shareable social/employer cuts, and 8-week retrospective.
+
+---
+
+### The Content Action Playbook (How Teams Use This System)
+
+Instead of handing editors an unranked spreadsheet of 30,000 rows, the system outputs an prioritized queue mapped to concrete actions:
+
+```text
+Ranked URLs ──► Model Decay Probability ──► Diagnostic Reason Codes ──► Action Work Order
+```
+
+| Action Tier | Priority | Trigger Conditions | Editorial Work Order |
+|---|:---:|---|---|
+| **`refresh_and_review_ctr`** | **1 (Top)** | High decay probability + striking distance rank (positions 4–30) + sub-par CTR (<2.0%) | **SERP Snippet Overhaul:** Rewrite meta title and description for search intent; implement FAQ schema to win Page 1 click equity. |
+| **`refresh_and_review_engagement`** | **2** | High decay probability + low on-page engagement (<30%) + high bounce | **UX & Layout Restructuring:** Add executive bullet summary, re-order headings, embed interactive media, remove conversion friction. |
+| **`expand_and_refresh`** | **3** | High decay probability + thin content (<1,000 words) | **Depth & Topical Authority:** Deepen semantic breadth, resolve secondary user questions, add authoritative references. |
+| **`refresh`** | **4** | Mature decaying pillar content with established traffic equity | **Fact & Currency Refresh:** Update outdated statistics, verify broken links, add current-year examples, refresh publication date. |
+| **`monitor`** | **5** | Stable content or low-confidence predictions | **Passive Monitoring:** No human intervention required. |
+
+---
+
+### Project Deliverables & Navigation Directory
+
+- **Live Research Paper:** [https://sumit2003-dev.github.io/flyrank-ml-internship/](https://sumit2003-dev.github.io/flyrank-ml-internship/)
+- **Comprehensive Written Capstone Report:** [`work/capstone_report.md`](work/capstone_report.md)
+- **Executive PDF Report:** [`outputs/flyrank_refresh_model_results.pdf`](outputs/flyrank_refresh_model_results.pdf)
+- **Full Retrospective & Deliverables Master Index:** [`work/RETROSPECTIVE.md`](work/RETROSPECTIVE.md)
+- **The Plan to Keep Building:** [`work/PLAN_TO_KEEP_BUILDING.md`](work/PLAN_TO_KEEP_BUILDING.md)
+- **Production Ranked Queues:** [`outputs/refresh_queue.csv`](outputs/refresh_queue.csv) & [`work/outputs/action_playbook_queue.csv`](work/outputs/action_playbook_queue.csv)
+- **All Assignment Notebooks:** [`work/notebooks/`](work/notebooks/) (`w01` through `capstone.ipynb`)
+
+---
+
 *© 2026 Sumit Kumar · Released under the [MIT License](LICENSE).*
