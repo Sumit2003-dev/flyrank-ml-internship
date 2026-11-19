@@ -105,6 +105,7 @@
     <a href="#limitations">Limitations</a>
     <a href="#playbook">Action Playbook</a>
     <a href="#reproducibility">Reproducibility</a>
+    <a href="#showcase">Showcase &amp; Cuts</a>
     <a href="#acknowledgments">Acknowledgments</a>
   </nav>
 
@@ -113,7 +114,7 @@
     <!-- ABSTRACT -->
     <section id="abstract">
       <div class="abstract-box">
-        <strong>Abstract:</strong> Maintaining organic search visibility across tens of thousands of enterprise pages is fundamentally constrained by human editorial review bandwidth. In this study, we analyzed 30,000 pseudonymized content items across 32 enterprise brand domains from the FlyRank search intelligence dataset. We engineered a leak-free feature vector from 90-day search aggregates, audited empirical ranking decay signals, and trained supervised classification models evaluated under a strict client-holdout grouped split (<code>GroupKFold</code>). Our Random Forest ensemble achieves a <strong>Precision@50 of 0.740</strong> on unseen client domains compared to <strong>0.240</strong> for standard heuristic rules—delivering a <strong>~3.1× precision lift (+0.500 absolute)</strong>. These results are operationalized into an automated Content Action Playbook with transparent reason codes, equipping editorial teams to prioritize high-yield updates while respecting strict non-causal limitations.
+        <strong>Abstract:</strong> Maintaining organic search visibility across tens of thousands of enterprise pages is fundamentally constrained by human editorial review bandwidth. At FlyRank, where content is published and managed as infrastructure, production historically relied on heuristic flags that produce massive score ties and low review precision. In this study, we analyzed 30,000 pseudonymized content items across 32 enterprise brand domains from the FlyRank search intelligence dataset. We engineered a leak-free feature vector from 90-day search aggregates, audited empirical ranking decay signals, and trained supervised classification models evaluated under a strict client-holdout grouped split (<code>GroupKFold</code>). Our Random Forest ensemble achieves a <strong>Precision@50 of 0.740</strong> on unseen client domains compared to <strong>0.240</strong> for standard heuristic rules—delivering a <strong>~3.1× precision lift (+0.500 absolute)</strong>. These results are operationalized into an automated Content Action Playbook with transparent reason codes, equipping editorial teams to prioritize high-yield updates while respecting strict non-causal limitations.
       </div>
 
       <div class="grid-2">
@@ -132,15 +133,17 @@
 
     <!-- PROBLEM -->
     <section id="problem">
-      <h2>1. Introduction &amp; Problem Framing</h2>
-      <p>Modern enterprise publishing teams manage expansive content portfolios spanning 5,000 to over 100,000 URLs. As search engine ranking algorithms and competitive dynamics evolve, existing content inevitably undergoes search decay. However, manual editorial audits cannot scale across the whole corpus. The central operational decision is: <strong>Which specific pages should editorial teams review and refresh during each bi-weekly sprint?</strong></p>
+      <h2>1. Introduction &amp; Case Study Context</h2>
+      <p>Modern enterprise publishing teams manage expansive content portfolios spanning 5,000 to over 100,000 URLs. At <strong>FlyRank</strong>, content is managed as infrastructure: autonomous systems research, publish, and monitor content directly within client sites, watching daily search performance signals to detect traffic decay. However, identifying which specific pages require human editorial intervention has historically relied on hand-crafted heuristic rules (such as <code>health_score</code>, staleness cutoffs, and needs-attention tags). These static rules create thousands of tied candidates and flag healthy evergreen assets indiscriminately, wasting valuable human review hours.</p>
+      
+      <p>The central operational decision is: <strong>Which specific pages should editorial teams review and refresh during each bi-weekly sprint?</strong></p>
       
       <p>The cost of decision errors in this domain is highly asymmetric:</p>
       <ul>
         <li><strong>False Positives (flagged as decaying, but actually stable):</strong> Low cost. A reviewer spends 3–5 minutes examining a healthy URL, confirms performance, and marks it as sound.</li>
         <li><strong>False Negatives (decay missed):</strong> High compounding cost. When a high-impression page slips from Google Page 1 into striking distance (positions 11–20), click-through volume drops by over 80%. Regaining ranking equity often requires months of link acquisition and indexation effort.</li>
       </ul>
-      <p>Heuristic rules (e.g., "update pages older than 6 months") flag thousands of tied URLs indiscriminately. Machine learning offers continuous scoring and multi-variable interaction modeling, transforming unranked lists into prioritized, high-precision review queues.</p>
+      <p>Heuristic rules (e.g., "update pages older than 6 months") flag thousands of tied URLs indiscriminately, achieving only a 24% Precision@50 on new client portfolios. Machine learning offers continuous scoring and multi-variable interaction modeling, transforming unranked lists into prioritized, high-precision review queues.</p>
     </section>
 
     <!-- DATA -->
@@ -362,9 +365,45 @@ python scripts/run_all.py</code></pre>
       </ul>
     </section>
 
+    <!-- SHOWCASE & SHAREABLE CUTS -->
+    <section id="showcase">
+      <h2>9. Demo Showcase &amp; Shareable Summaries</h2>
+      <p>Prepared for the Week-8 Capstone Showcase and professional knowledge sharing:</p>
+
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-title">5-MINUTE SHOWCASE DEMO OUTLINE</div>
+        <ul>
+          <li><strong>Min 1 (The Question &amp; Problem):</strong> Editorial bandwidth vs. search decay across 30k URLs. FlyRank status-quo hand-written rules create thousands of tied pages and low review precision.</li>
+          <li><strong>Min 2 (Data Contract &amp; Method):</strong> 30k URLs, 32 clients from 79M-row warehouse. Leak-free 24-feature contract banning 30-day outcome windows. Grouped 5-fold <code>GroupKFold</code> by <code>client_id</code>.</li>
+          <li><strong>Min 3 (Headline Chart):</strong> Figure 2 (Model Benchmark Comparison). Heuristic baseline scores 0.240 Precision@50; Random Forest scores 0.740 on unseen client domains.</li>
+          <li><strong>Min 4 (Honest Findings &amp; Limits):</strong> 3.1× precision lift (+0.500 absolute). Explicit non-causal bounds: prioritizes decay risk; does not guarantee traffic reversal without an A/B test.</li>
+          <li><strong>Min 5 (Operational Recommendation):</strong> Automated Content Action Playbook with transparent reason codes (e.g. meta tag overhaul for striking-distance low-CTR pages). Strict human-in-the-loop review guardrails.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">TWO SHAREABLE PROFESSIONAL CUTS</div>
+        <h3>Social Post (Methodology-Focused)</h3>
+        <p style="background: var(--bg-alt); padding: 0.8rem 1rem; border-left: 3px solid var(--primary); border-radius: 4px; font-size: 0.92rem;">
+          <strong>How we beat heuristic SEO rules by 3.1× using honest machine learning.</strong><br><br>
+          In enterprise content operations, teams manage 30,000+ pages. When search traffic dips, static heuristic rules (like "flag if older than 90 days") waste scarce editorial hours—yielding only 24% precision in top-50 review batches.<br><br>
+          At FlyRank, we engineered a supervised ranking engine across 32 enterprise domains: partitioned 44 columns to prevent leakage, evaluated on unseen client domains via 5-fold <code>GroupKFold</code>, and achieved 0.740 Precision@50 (+0.500 lift). It’s a high-precision prioritization tool for human editors, not an autonomous rewrite bot.<br><br>
+          Paper: <a href="https://sumit2003-dev.github.io/flyrank-ml-internship/">https://sumit2003-dev.github.io/flyrank-ml-internship/</a><br>
+          Code: <a href="https://github.com/Sumit2003-dev/flyrank-ml-internship">https://github.com/Sumit2003-dev/flyrank-ml-internship</a>
+        </p>
+
+        <h3 style="margin-top: 1.2rem;">3-Sentence Employer Summary</h3>
+        <p style="background: var(--bg-alt); padding: 0.8rem 1rem; border-left: 3px solid var(--success); border-radius: 4px; font-size: 0.92rem;">
+          <strong>What I built:</strong> An end-to-end supervised decay-risk ranking pipeline and operational Content Action Playbook that prioritizes enterprise pages for editorial refresh sprints with explainable reason codes.<br>
+          <strong>On what data:</strong> 30,000 pseudonymized enterprise URLs across 32 client domains from FlyRank's 79-million-row warehouse, using a leak-free 24-feature contract evaluated under grouped client-holdout cross-validation (<code>GroupKFold</code>).<br>
+          <strong>What it showed:</strong> The ensemble model achieved a Precision@50 of 0.740 on unseen client domains compared to 0.240 for standard heuristic rules—delivering a ~3.1× operational efficiency lift (+0.500 absolute) while adhering to strict non-causal claim boundaries.
+        </p>
+      </div>
+    </section>
+
     <!-- ACKNOWLEDGMENTS & DATA CREDIT -->
     <section id="acknowledgments">
-      <h2>9. Acknowledgments &amp; Data Credit</h2>
+      <h2>10. Acknowledgments &amp; Data Credit</h2>
       <p>This research was <strong>Built on the FlyRank ML Internship dataset</strong>, provided by <a href="https://flyrank.ai" target="_blank" rel="noopener noreferrer">FlyRank (https://flyrank.ai)</a>.</p>
       <p>The study builds upon 79 million rows of real-world production search telemetry across multi-domain enterprise portfolios, curated into an anonymized, public-safe research benchmark for applied search intelligence.</p>
       <div class="alert alert-note">

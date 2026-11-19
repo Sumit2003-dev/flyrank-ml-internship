@@ -187,3 +187,69 @@ python scripts/run_all.py
   - `charts/roc_curve.png`
   - `charts/precision_at_k.png`
   - `charts/feature_importance.png`
+
+---
+
+## 9. 5-Minute Demo Outline (Week-8 Showcase)
+
+A structured 5-minute walkthrough of the project, ready for presentation:
+
+- **Minute 1: The Question & Problem Context**
+  - *Context:* FlyRank manages content as infrastructure across tens of thousands of enterprise pages. In Google Search, content inevitably experiences decay.
+  - *Operational Decision:* With limited human editorial bandwidth in bi-weekly sprints, which pages should an editor refresh first?
+  - *Status Quo:* Production relied on hand-written heuristic flags (`days_since_update >= 90 AND ctr < 2.0%`) that produced massive score ties and low top-queue precision.
+
+- **Minute 2: Data Safety & Leakage-Free Methodology**
+  - *Data Scope:* 30,000 pseudonymized URLs across 32 brand domains drawn from FlyRank's 79M-row search warehouse. Fully public-safe (no client names, queries, or URLs).
+  - *Leakage Hunt:* 44 columns partitioned strictly; 24 historical 90-day trailing signals retained. Outcome windows (last 30d impressions/clicks) strictly banned.
+  - *Validation Design:* 5-fold `GroupKFold` grouped strictly by `client_id` to evaluate genuine generalization to unseen client domains.
+
+- **Minute 3: Headline Chart & Model Comparison**
+  - *Visual:* Present Figure 2 (`img/model_benchmark_comparison.png`).
+  - *Comparison:* Hand-crafted heuristic baseline achieves **Precision@50 of 0.240** on held-out clients (38 out of 50 editor reviews wasted). Our Random Forest ensemble delivers **Precision@50 of 0.740** against a 0.542 base rate.
+
+- **Minute 4: Honest Result & Scientific Limitations**
+  - *The Headline Lift:* A **~3.1× precision improvement (+0.500 absolute)** in top-50 editorial review batches (37 true declining items vs. 12).
+  - *Honest Limitations:* Observational ranking model, not a causal guarantee. We predict decay risk, not Google's ranking algorithm. Re-ranking prioritization requires editorial judgment.
+
+- **Minute 5: Actionable Recommendation (Playbook)**
+  - *Operational Hand-Off:* Translate probabilities into the Content Action Playbook with transparent reason codes.
+  - *Key Action:* Top priority `refresh_and_review_ctr` (decaying pages in striking distance 4–30 with low CTR) gets meta tag and search intent overhauls, while thin pages get expansion.
+  - *Guardrails:* Mandatory human-in-the-loop review; seasonal and core pillar URLs protected from automated alterations.
+
+---
+
+## 10. Shareable Cuts (Social & Employer Framing)
+
+Two concise, honest summaries tailored for distinct professional audiences:
+
+### Cut 1: Short Social Post (Methodology-Focused)
+> **How we beat heuristic SEO rules by 3.1× using honest machine learning.**
+>
+> In enterprise content operations, teams manage 30,000+ pages. When search traffic dips, static heuristic rules (like "flag if older than 90 days") waste scarce editorial hours—yielding only 24% precision in top-50 review batches.
+>
+> At @FlyRank, we engineered a supervised ranking engine across 32 enterprise domains:
+> 1. Partitioned a 44-column schema to enforce strict leakage prevention (banning outcome observation windows).
+> 2. Evaluated on unseen client domains using 5-fold `GroupKFold`.
+> 3. Trained a Random Forest ensemble achieving 0.740 Precision@50 (+0.500 lift over baseline).
+>
+> Honest takeaway: It’s a high-precision prioritization engine for human editors, not an autonomous rewrite bot.
+>
+> 📄 Read the open research paper: https://sumit2003-dev.github.io/flyrank-ml-internship/
+> 💻 Reproducible code & notebooks: https://github.com/Sumit2003-dev/flyrank-ml-internship
+>
+> #MachineLearning #DataScience #AppliedML #SEO #SearchIntelligence
+
+---
+
+### Cut 2: 3-Sentence Employer Summary ("What I built · On what data · What it showed")
+> - **What I built:** I developed a supervised decay-risk ranking pipeline and operational Content Action Playbook that prioritizes enterprise pages for bi-weekly editorial refresh sprints, replacing heuristic flags with continuous probability scoring and explainable reason codes.
+> - **On what data:** Built on 30,000 pseudonymized enterprise URLs across 32 client domains from FlyRank's 79-million-row search intelligence warehouse, using a leak-free 24-feature data contract evaluated under grouped client-holdout cross-validation (`GroupKFold`).
+> - **What it showed:** The ensemble model achieved a Precision@50 of 0.740 on unseen client domains compared to 0.240 for standard heuristic rules—delivering a ~3.1× operational efficiency lift (+0.500 absolute) while adhering to strict non-causal claim boundaries.
+
+---
+
+## 11. Acknowledgments & Data Credit
+
+This research was **Built on the FlyRank ML Internship dataset**, provided by [FlyRank (https://flyrank.ai)](https://flyrank.ai).
+Dataset access and academic usage granted through [FlyRank/internship-warehouse](https://huggingface.co/datasets/FlyRank/internship-warehouse).
