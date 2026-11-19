@@ -3,12 +3,14 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![Research Paper](https://img.shields.io/badge/Research%20Paper-Live%20on%20GitHub%20Pages-brightgreen)](https://sumit2003-dev.github.io/flyrank-ml-internship/)
+[![Demo Video Guide](https://img.shields.io/badge/Demo%20Video-3--5%20min%20Walkthrough-red)](work/RETROSPECTIVE.md#5-35-minute-live-video-demo-script-for-recording)
 [![Data Source](https://img.shields.io/badge/Data-FlyRank%20Warehouse-blueviolet)](https://flyrank.ai)
 
 > **Live Deployed Research Paper:** [https://sumit2003-dev.github.io/flyrank-ml-internship/](https://sumit2003-dev.github.io/flyrank-ml-internship/)  
 > **Author:** Sumit Kumar (FlyRank Applied ML & General AI Fluency Internship)  
 > **Track:** Refresh / Content Opportunity Scoring  
-> **Final Retrospective & Deliverables Index:** [`work/RETROSPECTIVE.md`](work/RETROSPECTIVE.md)
+> **Final Retrospective & Deliverables Index:** [`work/RETROSPECTIVE.md`](work/RETROSPECTIVE.md)  
+> **Demo Video Script & Breakdown:** [`work/RETROSPECTIVE.md#5`](work/RETROSPECTIVE.md#5-35-minute-live-video-demo-script-for-recording)
 
 ---
 
