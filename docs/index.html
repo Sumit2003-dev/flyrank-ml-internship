@@ -105,6 +105,7 @@
     <a href="#limitations">Limitations</a>
     <a href="#playbook">Action Playbook</a>
     <a href="#reproducibility">Reproducibility</a>
+    <a href="#acknowledgments">Acknowledgments</a>
   </nav>
 
   <main>
@@ -332,12 +333,19 @@ baseline_score = stale * visible * (40 * striking_distance + 30 * low_ctr + 30 *
         <img src="img/top_reason_codes.svg" alt="Top Reason Codes Distribution">
         <figcaption>Figure 4: Frequency of human-readable reason codes supporting editorial recommendations.</figcaption>
       </figure>
+
+      <h3>Operational Guardrails (Mandatory No-Go Rules)</h3>
+      <ul>
+        <li><strong>No Autonomous Rewriting:</strong> Model rankings serve human editorial decision-support. Never execute automated bulk copy generation without human domain review.</li>
+        <li><strong>Exclude Seasonal Spikes:</strong> Seasonal, cyclical, or holiday URLs exhibit expected off-season impression drops that should not trigger structural rewrites.</li>
+        <li><strong>Protect High-Equity Pillar URLs:</strong> Pages carrying core sitewide backlink equity must never undergo URL slug changes or structural stripping without technical SEO authorization.</li>
+      </ul>
     </section>
 
     <!-- REPRODUCIBILITY -->
     <section id="reproducibility">
       <h2>8. Reproducibility &amp; Artifacts</h2>
-      <p>All experiments, data pipelines, and notebooks are fully reproducible from the repository:</p>
+      <p>All experiments, data pipelines, and notebooks are fully reproducible from the public repository:</p>
       <pre><code># Clone and execute full pipeline
 git clone https://github.com/Sumit2003-dev/flyrank-ml-internship.git
 cd flyrank-ml-internship
@@ -346,18 +354,33 @@ python scripts/run_all.py</code></pre>
 
       <p>Key artifacts generated and tracked in the repository:</p>
       <ul>
-        <li>Complete Assignment Notebooks: <code>work/notebooks/w01_research_question.ipynb</code> through <code>capstone.ipynb</code></li>
-        <li>Capstone Report: <code>work/capstone_report.md</code></li>
-        <li>Executive PDF Report: <code>outputs/flyrank_refresh_model_results.pdf</code></li>
-        <li>Ranked Production Queues: <code>outputs/refresh_queue.csv</code> and <code>work/outputs/action_playbook_queue.csv</code></li>
+        <li>Capstone Notebook: <a href="https://github.com/Sumit2003-dev/flyrank-ml-internship/blob/main/work/notebooks/capstone.ipynb" target="_blank"><code>work/notebooks/capstone.ipynb</code></a></li>
+        <li>Full Capstone Report: <a href="https://github.com/Sumit2003-dev/flyrank-ml-internship/blob/main/work/capstone_report.md" target="_blank"><code>work/capstone_report.md</code></a></li>
+        <li>Executive PDF Report: <a href="https://github.com/Sumit2003-dev/flyrank-ml-internship/blob/main/outputs/flyrank_refresh_model_results.pdf" target="_blank"><code>outputs/flyrank_refresh_model_results.pdf</code></a></li>
+        <li>Ranked Editorial Queues: <a href="https://github.com/Sumit2003-dev/flyrank-ml-internship/blob/main/outputs/refresh_queue.csv" target="_blank"><code>outputs/refresh_queue.csv</code></a> and <a href="https://github.com/Sumit2003-dev/flyrank-ml-internship/blob/main/work/outputs/action_playbook_queue.csv" target="_blank"><code>work/outputs/action_playbook_queue.csv</code></a></li>
+        <li>Weekly Milestone Notebooks: <code>work/notebooks/w01_research_question.ipynb</code> through <code>w07_action_playbook.ipynb</code></li>
       </ul>
+    </section>
+
+    <!-- ACKNOWLEDGMENTS & DATA CREDIT -->
+    <section id="acknowledgments">
+      <h2>9. Acknowledgments &amp; Data Credit</h2>
+      <p>This research was <strong>Built on the FlyRank ML Internship dataset</strong>, provided by <a href="https://flyrank.ai" target="_blank" rel="noopener noreferrer">FlyRank (https://flyrank.ai)</a>.</p>
+      <p>The study builds upon 79 million rows of real-world production search telemetry across multi-domain enterprise portfolios, curated into an anonymized, public-safe research benchmark for applied search intelligence.</p>
+      <div class="alert alert-note">
+        <strong>Data Credit &amp; Attribution:</strong><br>
+        Source Organization: <a href="https://flyrank.ai" target="_blank" rel="noopener noreferrer">FlyRank AI (https://flyrank.ai)</a><br>
+        Research Dataset: FlyRank Machine Learning Internship Warehouse (<a href="https://huggingface.co/datasets/FlyRank/internship-warehouse" target="_blank" rel="noopener noreferrer">Hugging Face Repository</a>)<br>
+        Curator: Mirza Bilal &amp; the FlyRank Research Team
+      </div>
     </section>
 
   </main>
 
   <footer>
     <p>FlyRank Applied ML Internship · Research Track: Google Search Ranking &amp; Discoverability</p>
-    <p>Data provided under academic terms via <a href="https://huggingface.co/datasets/FlyRank/internship-warehouse" target="_blank">FlyRank/internship-warehouse</a>.</p>
+    <p>Built on the FlyRank ML Internship dataset · <a href="https://flyrank.ai" target="_blank" rel="noopener noreferrer">FlyRank (https://flyrank.ai)</a></p>
+    <p>Data provided under academic terms via <a href="https://huggingface.co/datasets/FlyRank/internship-warehouse" target="_blank" rel="noopener noreferrer">FlyRank/internship-warehouse</a>.</p>
     <p>&copy; 2026 Sumit Kumar · Released under MIT License</p>
   </footer>
 
