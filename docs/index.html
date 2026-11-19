@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Applied Search Intelligence: Google Search Ranking & Discoverability | FlyRank Research</title>
+  <meta name="description" content="Applied Machine Learning study on search ranking decay and content refresh prioritization across 30,000 enterprise pages.">
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #1557b0;
+      --navy: #0d1b2a;
+      --text: #202124;
+      --text-muted: #5f6368;
+      --bg: #ffffff;
+      --bg-alt: #f8f9fa;
+      --border: #dadce0;
+      --card-border: #e8eaed;
+      --success: #1e8e3e;
+      --warning: #f9ab00;
+      --danger: #d93025;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(60,64,67,0.12), 0 1px 2px rgba(60,64,67,0.24);
+      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-main); color: var(--text); background: var(--bg); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+
+    header { background: var(--navy); color: #fff; padding: 3rem 1.5rem 2.5rem; text-align: center; }
+    .badge { display: inline-block; padding: 0.3rem 0.8rem; background: rgba(255,255,255,0.15); border-radius: 20px; font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem; color: #8ab4f8; }
+    h1 { font-size: 2.25rem; font-weight: 800; max-width: 900px; margin: 0 auto 0.75rem; line-height: 1.25; }
+    .subtitle { font-size: 1.15rem; color: #bdc1c6; max-width: 750px; margin: 0 auto 1.5rem; }
+    .meta-bar { font-size: 0.9rem; color: #9aa0a6; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+    .meta-bar a { color: #8ab4f8; text-decoration: none; }
+    .meta-bar a:hover { text-decoration: underline; }
+
+    nav { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border); z-index: 100; padding: 0.75rem 1.5rem; display: flex; justify-content: center; gap: 1.2rem; flex-wrap: wrap; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+    nav a { text-decoration: none; color: var(--text-muted); font-size: 0.88rem; font-weight: 600; padding: 0.2rem 0.5rem; border-radius: 4px; transition: color 0.15s; }
+    nav a:hover { color: var(--primary); }
+
+    main { max-width: 960px; margin: 2rem auto; padding: 0 1.5rem; }
+    section { margin-bottom: 3.5rem; scroll-margin-top: 4rem; }
+    h2 { font-size: 1.65rem; font-weight: 700; color: var(--navy); border-bottom: 2px solid var(--primary); padding-bottom: 0.4rem; margin-bottom: 1.2rem; }
+    h3 { font-size: 1.2rem; font-weight: 600; color: #3c4043; margin: 1.5rem 0 0.6rem; }
+    p { margin-bottom: 1rem; }
+
+    .abstract-box { background: #e8f0fe; border-left: 5px solid var(--primary); padding: 1.5rem; border-radius: 0 var(--radius) var(--radius) 0; margin-bottom: 2.5rem; font-size: 1.05rem; }
+    .abstract-box strong { color: var(--primary-dark); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } h1 { font-size: 1.8rem; } }
+
+    .card { background: var(--bg); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); }
+    .card-title { font-size: 0.95rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+    .stat-number { font-size: 2.2rem; font-weight: 800; color: var(--primary); line-height: 1.1; margin-bottom: 0.3rem; }
+    .stat-desc { font-size: 0.85rem; color: var(--text-muted); }
+
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.92rem; background: var(--bg); }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: var(--bg-alt); font-weight: 600; color: var(--navy); }
+    tr:hover { background: #fdfdfd; }
+    .text-right { text-align: right; }
+    .highlight-row { background: #e6f4ea; font-weight: 600; }
+
+    figure { margin: 2rem 0; text-align: center; }
+    figure img { max-width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); }
+    figcaption { margin-top: 0.6rem; font-size: 0.88rem; color: var(--text-muted); font-style: italic; }
+
+    .alert { padding: 1rem 1.25rem; border-radius: var(--radius); margin: 1.5rem 0; font-size: 0.95rem; }
+    .alert-note { background: #eef3fc; border-left: 4px solid var(--primary); color: #174ea6; }
+    .alert-warning { background: #fef7e0; border-left: 4px solid var(--warning); color: #7c4a03; }
+
+    ul, ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.4rem; }
+
+    code { font-family: monospace; background: #f1f3f4; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.88rem; }
+    pre { background: #282c34; color: #abb2bf; padding: 1rem; border-radius: var(--radius); overflow-x: auto; margin: 1rem 0; font-size: 0.88rem; }
+
+    footer { background: var(--bg-alt); border-top: 1px solid var(--border); padding: 2.5rem 1.5rem; text-align: center; font-size: 0.88rem; color: var(--text-muted); margin-top: 4rem; }
+    footer a { color: var(--primary); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge">FlyRank Applied ML Internship · Research Paper</div>
+    <h1>Applied Search Intelligence: Google Search Ranking &amp; Discoverability</h1>
+    <p class="subtitle">Prioritizing Content Refresh Review via Honest Machine Learning on 30,000 Enterprise Pages</p>
+    <div class="meta-bar">
+      <span><strong>Author:</strong> Sumit Kumar</span>
+      <span><strong>Track:</strong> Refresh / Content Opportunity Scoring</span>
+      <span><a href="https://github.com/Sumit2003-dev/flyrank-ml-internship" target="_blank">GitHub Repository</a></span>
+      <span><strong>Date:</strong> March 2026</span>
+    </div>
+  </header>
+
+  <nav>
+    <a href="#abstract">Abstract</a>
+    <a href="#problem">Problem</a>
+    <a href="#data">Data Contract</a>
+    <a href="#signals">Signal Audit</a>
+    <a href="#methodology">Methodology</a>
+    <a href="#results">Results</a>
+    <a href="#limitations">Limitations</a>
+    <a href="#playbook">Action Playbook</a>
+    <a href="#reproducibility">Reproducibility</a>
+  </nav>
+
+  <main>
+
+    <!-- ABSTRACT -->
+    <section id="abstract">
+      <div class="abstract-box">
+        <strong>Abstract:</strong> Maintaining organic search visibility across tens of thousands of enterprise pages is fundamentally constrained by human editorial review bandwidth. In this study, we analyzed 30,000 pseudonymized content items across 32 enterprise brand domains from the FlyRank search intelligence dataset. We engineered a leak-free feature vector from 90-day search aggregates, audited empirical ranking decay signals, and trained supervised classification models evaluated under a strict client-holdout grouped split (<code>GroupKFold</code>). Our Random Forest ensemble achieves a <strong>Precision@50 of 0.740</strong> on unseen client domains compared to <strong>0.240</strong> for standard heuristic rules—delivering a <strong>~3.1× precision lift (+0.500 absolute)</strong>. These results are operationalized into an automated Content Action Playbook with transparent reason codes, equipping editorial teams to prioritize high-yield updates while respecting strict non-causal limitations.
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">PRECISION@50 (CLIENT HOLDOUT)</div>
+          <div class="stat-number">0.740</div>
+          <div class="stat-desc">Ensemble Model vs. 0.240 Heuristic Baseline (Base rate: 0.542)</div>
+        </div>
+        <div class="card">
+          <div class="card-title">TOP-QUEUE OPERATIONAL LIFT</div>
+          <div class="stat-number">+0.500</div>
+          <div class="stat-desc">37 true declining items in top 50 review batch vs. 12 under hand rules</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section id="problem">
+      <h2>1. Introduction &amp; Problem Framing</h2>
+      <p>Modern enterprise publishing teams manage expansive content portfolios spanning 5,000 to over 100,000 URLs. As search engine ranking algorithms and competitive dynamics evolve, existing content inevitably undergoes search decay. However, manual editorial audits cannot scale across the whole corpus. The central operational decision is: <strong>Which specific pages should editorial teams review and refresh during each bi-weekly sprint?</strong></p>
+      
+      <p>The cost of decision errors in this domain is highly asymmetric:</p>
+      <ul>
+        <li><strong>False Positives (flagged as decaying, but actually stable):</strong> Low cost. A reviewer spends 3–5 minutes examining a healthy URL, confirms performance, and marks it as sound.</li>
+        <li><strong>False Negatives (decay missed):</strong> High compounding cost. When a high-impression page slips from Google Page 1 into striking distance (positions 11–20), click-through volume drops by over 80%. Regaining ranking equity often requires months of link acquisition and indexation effort.</li>
+      </ul>
+      <p>Heuristic rules (e.g., "update pages older than 6 months") flag thousands of tied URLs indiscriminately. Machine learning offers continuous scoring and multi-variable interaction modeling, transforming unranked lists into prioritized, high-precision review queues.</p>
+    </section>
+
+    <!-- DATA -->
+    <section id="data">
+      <h2>2. Data Contract &amp; Safety Standard</h2>
+      <p>This research utilized the FlyRank pseudonymized dataset (<code>content_refresh_anonymized.csv</code>) covering <strong>30,000 pages and 32 client domains</strong>. In accordance with strict data-safety standards, no proprietary URLs, domain names, client names, or raw search queries were ingested.</p>
+
+      <div class="alert alert-note">
+        <strong>The Leakage Hunt Policy:</strong> Target leakage is the primary failure mode in search intelligence models. Our data contract strictly partitioned all 44 raw columns:
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Taxonomy Bucket</th>
+            <th>Field Count</th>
+            <th>Selected Fields</th>
+            <th>Operational Governance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Features</strong></td>
+            <td>24</td>
+            <td><code>impressions_90d</code>, <code>avg_position</code>, <code>ctr</code>, <code>days_since_last_update</code>, <code>word_count</code></td>
+            <td>Historical trailing signals available prior to prediction moment $T$.</td>
+          </tr>
+          <tr>
+            <td><strong>Target Label</strong></td>
+            <td>2</td>
+            <td><code>is_declining_label</code>, <code>trend_pct</code></td>
+            <td><code>is_declining_label = 1</code> when 30d trajectory is down. Banned from inputs.</td>
+          </tr>
+          <tr>
+            <td><strong>Context</strong></td>
+            <td>4</td>
+            <td><code>content_id</code>, <code>client_id</code>, <code>provider_used</code>, <code>model_used</code></td>
+            <td>Used strictly for grouped splitting and joining; never learned as signals.</td>
+          </tr>
+          <tr>
+            <td><strong>Excluded</strong></td>
+            <td>14</td>
+            <td><code>*_last_30d</code>, <code>*_prev_30d</code>, <code>age_tier</code>, <code>trend_direction</code></td>
+            <td>Excluded to prevent temporal target overlap and arbitrary binning.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Sentinel Zeroes and Missingness Patterns</h3>
+      <p>Systematic data exploration revealed two critical traps:</p>
+      <ul>
+        <li><code>avg_position = 0</code> indicates unranked content with zero GSC visibility (1,205 rows), rather than rank zero. An indicator flag <code>has_position_data</code> was added.</li>
+        <li>Missingness follows content types: <code>feedly article</code> entries have 100% missing keyword metadata and 28.5% missing word counts. Imputing raw zeroes injects artificial format bias; explicit missingness indicators (<code>has_search_volume</code>, <code>has_word_count</code>) were constructed instead.</li>
+      </ul>
+    </section>
+
+    <!-- SIGNALS -->
+    <section id="signals">
+      <h2>3. Empirical Signal Audit</h2>
+      <p>Before training predictive models, we stress-tested foundational SEO assumptions against the empirical dataset using sample-size floors ($N \ge 50$):</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">TEST 1: FRESHNESS VS. DECAY</div>
+          <p><strong>Verdict: CONFIRMED.</strong> Content un-updated for 181+ days displays a <strong>67.8% decline rate</strong>, compared to 44.1% for content refreshed within 31–90 days.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">TEST 2: VISIBILITY VS. RESILIENCE</div>
+          <p><strong>Verdict: OPPOSITE.</strong> High-impression pages exhibit higher rates of downward momentum (>65%) than low-impression tiers (~45%), reflecting competitive displacement vulnerability.</p>
+        </div>
+      </div>
+
+      <figure>
+        <img src="img/top_feature_importance.svg" alt="Top Feature Importance Chart">
+        <figcaption>Figure 1: Normalized Random Forest feature importance showing dominant contribution of search activity breadth and demand scale.</figcaption>
+      </figure>
+    </section>
+
+    <!-- METHODOLOGY -->
+    <section id="methodology">
+      <h2>4. Methodology &amp; Validation Design</h2>
+      <p>To evaluate real-world generalization, models were assessed using <strong>5-fold GroupKFold validation grouped by <code>client_id</code></strong>. The test fold comprises enterprise brands completely hidden during training.</p>
+
+      <h3>Baseline Formulation</h3>
+      <p>We implemented a transparent editorial heuristic baseline:</p>
+      <pre><code>stale = (days_since_update >= 90)
+visible = (impressions_90d >= 300)
+striking_distance = (avg_position >= 4.0 and avg_position <= 30.0)
+low_ctr = (ctr < 2.0%)
+
+baseline_score = stale * visible * (40 * striking_distance + 30 * low_ctr + 30 * traffic_scale)</code></pre>
+      
+      <h3>Candidate Models</h3>
+      <p>We trained and evaluated three architectures on identical splits: L2-regularized <strong>Logistic Regression</strong>, a depth-constrained <strong>Decision Tree</strong>, and a 100-estimator <strong>Random Forest</strong> ensemble.</p>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="results">
+      <h2>5. Results &amp; Model Comparison</h2>
+      <p>All candidates were benchmarked on the held-out client portfolios using <strong>Precision@50</strong> as the primary metric of record, alongside ROC AUC:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Model / Strategy</th>
+            <th>Validation Split</th>
+            <th class="text-right">ROC AUC</th>
+            <th class="text-right">Precision@20</th>
+            <th class="text-right">Precision@50</th>
+            <th class="text-right">Lift vs. Baseline</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Baseline Heuristic Rule</td>
+            <td>Client Holdout</td>
+            <td class="text-right">0.627</td>
+            <td class="text-right">0.250</td>
+            <td class="text-right">0.240</td>
+            <td class="text-right">—</td>
+          </tr>
+          <tr>
+            <td>Logistic Regression</td>
+            <td>Client Holdout</td>
+            <td class="text-right">0.700</td>
+            <td class="text-right">0.750</td>
+            <td class="text-right">0.740</td>
+            <td class="text-right">+0.500</td>
+          </tr>
+          <tr>
+            <td>Decision Tree (depth=5)</td>
+            <td>Client Holdout</td>
+            <td class="text-right">0.742</td>
+            <td class="text-right">0.700</td>
+            <td class="text-right">0.700</td>
+            <td class="text-right">+0.460</td>
+          </tr>
+          <tr class="highlight-row">
+            <td><strong>Random Forest Ensemble</strong></td>
+            <td><strong>Client Holdout</strong></td>
+            <td class="text-right"><strong>0.747–0.763</strong></td>
+            <td class="text-right"><strong>0.750</strong></td>
+            <td class="text-right"><strong>0.740</strong></td>
+            <td class="text-right"><strong>+0.500</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <figure>
+        <img src="img/model_benchmark_comparison.png" alt="Precision@50 Model Benchmark Comparison">
+        <figcaption>Figure 2: Precision@50 on held-out enterprise client domains. Learned models deliver a ~3.1× lift over heuristic hand rules relative to the 0.542 base rate.</figcaption>
+      </figure>
+
+      <h3>Error Analysis</h3>
+      <p>Inspection of false positive predictions in the top 50 revealed high-impression evergreen pillar pages with strong domain backlink authority that held Page 1 rankings despite not being edited for 200+ days. False negatives were concentrated in low-impression long-tail pages where 50% relative traffic drops occurred over tiny absolute impression volumes.</p>
+    </section>
+
+    <!-- LIMITATIONS -->
+    <section id="limitations">
+      <h2>6. Scientific Limitations</h2>
+      <div class="alert alert-warning">
+        <strong>What This Work Cannot Claim:</strong>
+        <ol>
+          <li><strong>Non-Causal Design:</strong> This is an observational study. We demonstrate that our model accurately ranks content experiencing decay. We do not claim that executing a refresh will causally reverse traffic loss without a randomized controlled trial.</li>
+          <li><strong>Proxy Target Horizon:</strong> The label evaluates historical trajectory within the same export snapshot rather than tracking prospective forward-window recovery post-intervention.</li>
+          <li><strong>No Algorithmic Reverse-Engineering:</strong> We have not "modeled Google's algorithm." Search ranking is governed by hundreds of real-time signals outside this observational slice.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- PLAYBOOK -->
+    <section id="playbook">
+      <h2>7. Content Action Playbook</h2>
+      <p>To ensure high human trust, model outputs are translated into five concrete operational action tiers accompanied by explicit diagnostic reason codes:</p>
+
+      <figure>
+        <img src="img/action_mix.svg" alt="Playbook Action Mix">
+        <figcaption>Figure 3: Distribution of actionable editorial work orders across the portfolio.</figcaption>
+      </figure>
+
+      <ul>
+        <li><strong><code>refresh_and_review_ctr</code>:</strong> Top priority. High predicted decay risk + striking distance position (4–30) + sub-par CTR (<2.0%). <em>Work order:</em> Rewrite meta title/description for SERP click intent.</li>
+        <li><strong><code>refresh_and_review_engagement</code>:</strong> Decaying content with low on-page engagement (<30%). <em>Work order:</em> Restructure layout, add summary bullets, and remove bounce friction.</li>
+        <li><strong><code>expand_and_refresh</code>:</strong> Decaying thin content (<1000 words). <em>Work order:</em> Deepen topical depth and add authoritative references.</li>
+        <li><strong><code>refresh</code>:</strong> Decaying pillar content. <em>Work order:</em> Update statistics, verify links, and refresh publication dates.</li>
+        <li><strong><code>monitor</code>:</strong> Stable or low-confidence pages. No action required.</li>
+      </ul>
+
+      <figure>
+        <img src="img/top_reason_codes.svg" alt="Top Reason Codes Distribution">
+        <figcaption>Figure 4: Frequency of human-readable reason codes supporting editorial recommendations.</figcaption>
+      </figure>
+    </section>
+
+    <!-- REPRODUCIBILITY -->
+    <section id="reproducibility">
+      <h2>8. Reproducibility &amp; Artifacts</h2>
+      <p>All experiments, data pipelines, and notebooks are fully reproducible from the repository:</p>
+      <pre><code># Clone and execute full pipeline
+git clone https://github.com/Sumit2003-dev/flyrank-ml-internship.git
+cd flyrank-ml-internship
+pip install -r requirements.txt
+python scripts/run_all.py</code></pre>
+
+      <p>Key artifacts generated and tracked in the repository:</p>
+      <ul>
+        <li>Complete Assignment Notebooks: <code>work/notebooks/w01_research_question.ipynb</code> through <code>capstone.ipynb</code></li>
+        <li>Capstone Report: <code>work/capstone_report.md</code></li>
+        <li>Executive PDF Report: <code>outputs/flyrank_refresh_model_results.pdf</code></li>
+        <li>Ranked Production Queues: <code>outputs/refresh_queue.csv</code> and <code>work/outputs/action_playbook_queue.csv</code></li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>FlyRank Applied ML Internship · Research Track: Google Search Ranking &amp; Discoverability</p>
+    <p>Data provided under academic terms via <a href="https://huggingface.co/datasets/FlyRank/internship-warehouse" target="_blank">FlyRank/internship-warehouse</a>.</p>
+    <p>&copy; 2026 Sumit Kumar · Released under MIT License</p>
+  </footer>
+
+</body>
+</html>
